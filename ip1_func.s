@@ -1,40 +1,41 @@
 	.file	"ip1_func.c"
 	.text
+	.p2align 4,,15
 	.globl	ip_placement
 	.type	ip_placement, @function
 ip_placement:
 .LFB0:
 	.cfi_startproc
-	pushq	%rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	subq	$32, %rsp
-	movl	%edi, -20(%rbp)
-	movl	%esi, -24(%rbp)
-	movl	%edx, -28(%rbp)
-	movl	%ecx, -32(%rbp)
+	.cfi_offset 3, -16
+	xorl	%ebx, %ebx
+	sall	$24, %edi
+	movb	%cl, %bl
+	subq	$16, %rsp
+	.cfi_def_cfa_offset 32
+	movb	%dl, %bh
 	movq	%fs:40, %rax
-	movq	%rax, -8(%rbp)
+	movq	%rax, 8(%rsp)
 	xorl	%eax, %eax
-	movl	-32(%rbp), %eax
-	movb	%al, -12(%rbp)
-	movl	-28(%rbp), %eax
-	movb	%al, -11(%rbp)
-	movl	-24(%rbp), %eax
-	movb	%al, -10(%rbp)
-	movl	-20(%rbp), %eax
-	movb	%al, -9(%rbp)
-	movl	-12(%rbp), %eax
-	movq	-8(%rbp), %rdx
+	movzbl	%sil, %eax
+	sall	$16, %eax
+	movl	%eax, %esi
+	movzwl	%bx, %eax
+	orl	%esi, %eax
+	orl	%edi, %eax
+	movq	8(%rsp), %rdx
 	xorq	%fs:40, %rdx
-	je	.L3
-	call	__stack_chk_fail@PLT
-.L3:
-	leave
-	.cfi_def_cfa 7, 8
+	jne	.L5
+	addq	$16, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 16
+	popq	%rbx
+	.cfi_def_cfa_offset 8
 	ret
+.L5:
+	.cfi_restore_state
+	call	__stack_chk_fail@PLT
 	.cfi_endproc
 .LFE0:
 	.size	ip_placement, .-ip_placement

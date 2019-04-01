@@ -13,13 +13,9 @@ ip1_func.s: ip1_func.c
 ip2_func.s: ip2_func.c
 	${CC} ${CFLAGS} -S ip2_func.c -o ip2_func.s
 
-.PHONY: ip assembly clean
-
-ip: ip1 ip2
-
-assembly: ip1_func.s ip2_func.s
-
-all: ip assembly
+all: ip1 ip2 ip1_func.s ip2_func.s
 
 clean:
 	rm ip1 ip2 ip1_func.s ip2_func.s
+
+.PHONY clean all
